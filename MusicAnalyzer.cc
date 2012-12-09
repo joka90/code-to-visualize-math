@@ -56,32 +56,45 @@ void MusicAnalyzer::draw(sf::RenderWindow& canvas)
 {
 	if(vaildData)
 	{
- 		sf::VertexArray lines(sf::LinesStrip, sampelSize);
+ 		sf::VertexArray lines(sf::LinesStrip);
 		int mostCommonValue[10];
 		int mostCommonFreq[10];
 
+		for(int n=0;n<10;n++)
+		{
+			mostCommonFreq[n]=0;
+			mostCommonValue[n]=0;
+		}
+
+		int y = 0;
 		for(int i=20;i<sampelSize-500;i++)
 		{
 			int x = sqrt(pow(output[i][1],2)+pow(output[i][0],2));
-			lines[i-20].position = sf::Vector2f(i/4-20, 600-x);
-			for(int n=0;n<10;n++)
+			if(15 < x)
 			{
-				if(mostCommonValue[n]<x)
+				lines.append(sf::Vector2f(i-20, 1000-x));
+				for(int n=0;n<10;n++)
 				{
-					mostCommonFreq[n]=i-20;
-					mostCommonValue[n]=x;
-					break;
-				}
+					if(mostCommonValue[n]<x)
+					{
+						mostCommonFreq[n]=i-20;
+						mostCommonValue[n]=x;
+						break;
+					}
 
+				}
+				y++;
 			}
 		}
+		
 		canvas.draw(lines);
 		for(int n=0;n<10;n++)
 		{
-			cout << mostCommonFreq[n] << " " << mostCommonValue[n] << endl;
+			//cout << n << " F: " << mostCommonFreq[n] << "     A: " << mostCommonValue[n] << endl;
 		}
 		vaildData=false;
 		fftw_free(output);
+		lines.clear();
 	}
 }
 
